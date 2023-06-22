@@ -1,11 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const data = { id: "649459452029b0d0cdc83076" };
+  useEffect(() => {
+    axios
+      .post(`http://localhost:8000/produit/creation`, data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
