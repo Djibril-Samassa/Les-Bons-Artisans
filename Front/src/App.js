@@ -4,7 +4,7 @@ import "./App.css";
 
 function App() {
   const data = {
-    name: "A16dd4548dza,dzpa,dzoandoijnzandzdzaz1 Phone1",
+    name: "A16dd4548dza,dzpa,dzoandodzadzadad,zaldnzalijnzandzdzaz1 Phone1",
     type: "phone",
     price: 200.05,
     rating: 3.8,
@@ -13,14 +13,12 @@ function App() {
   };
   const test = () => {
     axios
-      .delete(
-        `http://localhost:8000/produit/suppresion/649483efb17c11df7aa1bad4`
-      )
+      .get(`http://localhost:8000/produit/649458ed2029b0d0cdc83074`, data)
       .then((res) => {
-        console.log(res.data.message);
+        console.log(res.data);
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        console.log(err);
       });
   };
 

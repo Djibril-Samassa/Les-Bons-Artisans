@@ -40,12 +40,16 @@ app.get("/produits", async (req, res) => {
 
 // Récupérer un produit avec l'id
 app.get("/produit/:produitId", async (req, res) => {
-  Produit.findById(req.params.produitId).then((produit) => {
-    res.send({
-      data: produit,
-      message: "Produit récupéré avec succès",
-    });
-  });
+  try {
+    // Récupérer le produit avec le bon id
+    const produit = await Produit.findById(req.params.produitId);
+    return res
+      .status(200)
+      .json({ data: produit, message: "Produit récupéré avec succès." });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ message: "Aucun produit n'a été trouvé." });
+  }
 });
 
 // Créer un produit
@@ -53,8 +57,8 @@ app.post("/produit/creation", async (req, res) => {
   const { nom, type, price, rating, warranty_years, available } = req.body;
   try {
     // Vérifier si un produit avec le même nom existe déjà => C'est le clé unique pour chaque produit
-    const produitExist = await Produit.findOne({ nom });
-    if (produitExist) {
+    const produit = await Produit.findOne({ nom });
+    if (produit) {
       return res
         .status(400)
         .json({ message: "Un produit avec ce nom existe déjà." });
