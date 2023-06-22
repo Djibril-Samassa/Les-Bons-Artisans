@@ -4,8 +4,8 @@ import "./App.css";
 
 function App() {
   const data = {
-    name: "A16dd4548dza,dzpa,dzoandodzadzadad,zaldnzalijnzandzdzaz1 Phone1",
-    type: "phone",
+    name: "test zajzdadzadzamodif",
+    type: "phone aïe",
     price: 200.05,
     rating: 3.8,
     warranty_years: 1,
@@ -13,7 +13,7 @@ function App() {
   };
   const test = () => {
     axios
-      .get(`http://localhost:8000/produit/649458ed2029b0d0cdc83074`, data)
+      .post(`http://localhost:8000/produit/creation/`, data)
       .then((res) => {
         console.log(res.data);
       })

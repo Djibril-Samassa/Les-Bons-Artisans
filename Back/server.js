@@ -54,28 +54,21 @@ app.get("/produit/:produitId", async (req, res) => {
 
 // Créer un produit
 app.post("/produit/creation", async (req, res) => {
-  const { nom, type, price, rating, warranty_years, available } = req.body;
+  const { name, type, price, rating, warranty_years, available } = req.body;
   try {
     // Vérifier si un produit avec le même nom existe déjà => C'est le clé unique pour chaque produit
-    const produit = await Produit.findOne({ nom });
+    const produit = await Produit.findOne({ name });
+    console.log(produit)
     if (produit) {
       return res
         .status(400)
         .json({ message: "Un produit avec ce nom existe déjà." });
     }
-
-    // Créer un nouveau produit
-    const nouveauProduit = new Produit({
-      nom,
-      description,
-      prix,
-    });
-
     // Enregistrer le produit dans la base de données
-    const produitEnregistre = await nouveauProduit.save();
+    const nouveauProduit = await Produit.create(req.body);
     res.status(201).json({
       message: "Le produit a été créé avec succès.",
-      produit: produitEnregistre,
+      produit: nouveauProduit,
     });
   } catch (error) {
     console.error(error);
@@ -108,4 +101,23 @@ app.delete("/produit/suppresion/:produitId", async (req, res) => {
 });
 
 // Modifier un produit
-app.post("/produit/modification/:produitId", async (req, res) => {});
+app.post("/produit/modification/:produitId", async (req, res) => {
+  const produitId = req.params.produitId;
+  const editedProduit = req.body;
+
+  console.log(editedProduit);
+
+  try {
+    // Vérifier si le produit existe avant de le supprimer
+    const produit = await Produit.findById(produitId);
+
+    // Mettre à jour le produit
+    await Produit.findByIdAndUpdate(produitId, editedProduit);
+    res.status(200).json({ message: "Le produit a été modifié avec succès." });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({
+      message: "Une erreur s'est produite lors de la modification du produit.",
+    });
+  }
+});
