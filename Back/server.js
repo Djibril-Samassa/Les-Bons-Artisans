@@ -28,10 +28,6 @@ mongoose
 
 // Routes
 
-app.get("/", async (req, res) => {
-  res.send("Hello word");
-});
-
 // Récupérer la liste des produits
 app.get("/produits", async (req, res) => {
   Produit.find().then((produitList) => {
@@ -54,11 +50,58 @@ app.get("/produit/:produitId", async (req, res) => {
 
 // Créer un produit
 app.post("/produit/creation", async (req, res) => {
-    console.log(req.body)
+  const { nom, type, price, rating, warranty_years, available } = req.body;
+  try {
+    // Vérifier si un produit avec le même nom existe déjà => C'est le clé unique pour chaque produit
+    const produitExist = await Produit.findOne({ nom });
+    if (produitExist) {
+      return res
+        .status(400)
+        .json({ message: "Un produit avec ce nom existe déjà." });
+    }
+
+    // Créer un nouveau produit
+    const nouveauProduit = new Produit({
+      nom,
+      description,
+      prix,
+    });
+
+    // Enregistrer le produit dans la base de données
+    const produitEnregistre = await nouveauProduit.save();
+    res.status(201).json({
+      message: "Le produit a été créé avec succès.",
+      produit: produitEnregistre,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Une erreur s'est produite lors de la création du produit.",
+    });
+  }
 });
 
 // Supprimer un produit
-app.post("/produit/suppresion/:produitId", async (req, res) => {});
+app.delete("/produit/suppresion/:produitId", async (req, res) => {
+  const produitId = req.params.produitId;
+
+  try {
+    // Vérifier si le produit existe avant de le supprimer
+    const produit = await Produit.findById(produitId);
+    if (!produit) {
+      return res.status(404).json({ message: "Le produit n'existe pas." });
+    }
+
+    // Supprimer le produit
+    await Produit.findByIdAndDelete(produitId);
+    res.status(200).json({ message: "Le produit a été supprimé avec succès." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Une erreur s'est produite lors de la suppression du produit.",
+    });
+  }
+});
 
 // Modifier un produit
 app.post("/produit/modification/:produitId", async (req, res) => {});
