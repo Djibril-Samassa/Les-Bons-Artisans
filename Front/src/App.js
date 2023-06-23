@@ -1,15 +1,17 @@
 import axios from "./Axios";
-import { useEffect } from "react";
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Accueil from "./Pages/Accueil";
+import Products from "./Pages/Products";
 import {
   getProductsList,
   getProductById,
   createProduct,
   editProduct,
   deleteProduct,
-} from "./Api/produits";
+} from "./Apis/produits";
 
-import { createAccount, Login, Logout } from "./Api/users";
+import { createAccount, Login, Logout } from "./Apis/users";
 
 function App() {
   const data = {
@@ -40,42 +42,14 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p
-          onClick={() => {
-            test();
-          }}
-        >
-          test
-        </p>
-        <p
-          onClick={() => {
-            connexion();
-          }}
-        >
-          Connexion
-        </p>
-        <p
-          onClick={() => {
-            deconnexion();
-          }}
-        >
-          Déconnexion
-        </p>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Accueil />} />
+          <Route path="/products" element={<Products />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
