@@ -9,7 +9,7 @@ function App() {
   };
   const test = () => {
     axios
-      .get(`http://localhost:8000/produits`)
+      .get(`http://localhost:8000/produits/produitsList`)
       .then((res) => {
         console.log(res.data);
       })
@@ -20,7 +20,7 @@ function App() {
 
   const connexion = () => {
     axios
-      .post(`http://localhost:8000/connexion`, data)
+      .post(`http://localhost:8000/users/connexion`, data)
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("token", res.data.token);
@@ -32,7 +32,7 @@ function App() {
 
   const deconnexion = () => {
     axios
-      .post("http://localhost:8000/deconnexion")
+      .post("http://localhost:8000/users/deconnexion")
       .then((res) => {
         console.log(res.data);
         localStorage.removeItem("token");
