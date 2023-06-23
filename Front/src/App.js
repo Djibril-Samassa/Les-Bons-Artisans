@@ -1,21 +1,23 @@
 import axios from "./Axios";
 import { useEffect } from "react";
 import "./App.css";
+import {
+  getProductsList,
+  getProductById,
+  createProduct,
+  editProduct,
+  deleteProduct,
+} from "./Api/produits";
 
 function App() {
   const data = {
-    email: "testdz@gmail.com",
-    password: "TesteurPasswordUnhashed",
+    name: "ancien test 6494a29a07d11c1263671888 => modifié",
+    type: "phone",
   };
-  const test = () => {
-    axios
-      .get(`http://localhost:8000/produits/produitsList`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  
+  const test = async () => {
+    const response = await editProduct("6494a29a07d11c1263671888", data);
+    console.log(response);
   };
 
   const connexion = () => {

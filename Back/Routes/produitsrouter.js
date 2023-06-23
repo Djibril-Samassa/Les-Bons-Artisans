@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const TokenMiddleware = require("../Middlewares/AuthMiddleware");
-const Produit = require("../Models/ProduitsModel")
+const Produit = require("../Models/ProduitsModel");
 
 // Récupérer la liste des produits
 router.get("/produitsList", TokenMiddleware, async (req, res) => {
@@ -13,8 +13,9 @@ router.get("/produitsList", TokenMiddleware, async (req, res) => {
   });
 });
 
-// Récupérer un produit avec l'id
+// Récupérer un produit à partir de l'id
 router.get("/produit/:produitId", async (req, res) => {
+  console.log(req.params.produitId);
   try {
     // Récupérer le produit avec le bon id
     const produit = await Produit.findById(req.params.produitId);
@@ -27,7 +28,7 @@ router.get("/produit/:produitId", async (req, res) => {
 });
 
 // Créer un produit
-router.post("/produit/creation", TokenMiddleware, async (req, res) => {
+router.post("/creation", TokenMiddleware, async (req, res) => {
   const { name, type, price, rating, warranty_years, available } = req.body;
   try {
     // Vérifier si un produit avec le même nom existe déjà => C'est le clé unique pour chaque produit
@@ -51,56 +52,43 @@ router.post("/produit/creation", TokenMiddleware, async (req, res) => {
 });
 
 // Supprimer un produit
-router.delete(
-  "/produit/suppresion/:produitId",
-  TokenMiddleware,
-  async (req, res) => {
-    const produitId = req.params.produitId;
-
-    try {
-      // Vérifier si le produit existe avant de le supprimer
-      const produit = await Produit.findById(produitId);
-      if (!produit) {
-        return res.status(404).json({ message: "Le produit n'existe pas." });
-      }
-
-      // Supprimer le produit
-      await Produit.findByIdAndDelete(produitId);
-      res
-        .status(200)
-        .json({ message: "Le produit a été supprimé avec succès." });
-    } catch (err) {
-      res.status(500).json({
-        message: "Une erreur s'est produite lors de la suppression du produit.",
-      });
+router.delete("/suppresion/:produitId", TokenMiddleware, async (req, res) => {
+  const produitId = req.params.produitId;
+  console.log(produitId);
+  try {
+    // Vérifier si le produit existe avant de le supprimer
+    const produit = await Produit.findById(produitId);
+    if (!produit) {
+      return res.status(404).json({ message: "Le produit n'existe pas." });
     }
+
+    // Supprimer le produit
+    await Produit.findByIdAndDelete(produitId);
+    res.status(200).json({ message: "Le produit a été supprimé avec succès." });
+  } catch (err) {
+    res.status(500).json({
+      message: "Une erreur s'est produite lors de la suppression du produit.",
+    });
   }
-);
+});
 
 // Modifier un produit
-router.post(
-  "/produit/modification/:produitId",
-  TokenMiddleware,
-  async (req, res) => {
-    const produitId = req.params.produitId;
-    const editedProduit = req.body;
+router.post("/modification/:produitId", TokenMiddleware, async (req, res) => {
+  const produitId = req.params.produitId;
+  const editedProduit = req.body;
 
-    try {
-      // Vérifier si le produit existe avant de le supprimer
-      const produit = await Produit.findById(produitId);
+  try {
+    // Vérifier si le produit existe avant de le supprimer
+    const produit = await Produit.findById(produitId);
 
-      // Mettre à jour le produit
-      await Produit.findByIdAndUpdate(produitId, editedProduit);
-      res
-        .status(200)
-        .json({ message: "Le produit a été modifié avec succès." });
-    } catch (err) {
-      res.status(400).json({
-        message:
-          "Une erreur s'est produite lors de la modification du produit.",
-      });
-    }
+    // Mettre à jour le produit
+    await Produit.findByIdAndUpdate(produitId, editedProduit);
+    res.status(200).json({ message: "Le produit a été modifié avec succès." });
+  } catch (err) {
+    res.status(400).json({
+      message: "Une erreur s'est produite lors de la modification du produit.",
+    });
   }
-);
+});
 
 module.exports = router;
