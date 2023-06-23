@@ -9,39 +9,34 @@ import {
   deleteProduct,
 } from "./Api/produits";
 
+import { createAccount, Login, Logout } from "./Api/users";
+
 function App() {
   const data = {
-    name: "ancien test 6494a29a07d11c1263671888 => modifié",
-    type: "phone",
+    email: "testapi@gmail.com",
+    password: "mdp",
   };
-  
+
   const test = async () => {
-    const response = await editProduct("6494a29a07d11c1263671888", data);
+    const response = await getProductsList();
     console.log(response);
   };
 
-  const connexion = () => {
-    axios
-      .post(`http://localhost:8000/users/connexion`, data)
-      .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("token", res.data.token);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const inscription = async () => {
+    const response = await createAccount(data);
+    console.log(response);
   };
 
-  const deconnexion = () => {
-    axios
-      .post("http://localhost:8000/users/deconnexion")
-      .then((res) => {
-        console.log(res.data);
-        localStorage.removeItem("token");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const connexion = async () => {
+    const response = await Login(data);
+    console.log(response);
+    localStorage.setItem("token", response.data.token);
+  };
+
+  const deconnexion = async () => {
+    const response = await Logout();
+    console.log(response);
+    localStorage.removeItem("token");
   };
 
   return (
@@ -63,7 +58,7 @@ function App() {
             test();
           }}
         >
-          Test Back
+          test
         </p>
         <p
           onClick={() => {
