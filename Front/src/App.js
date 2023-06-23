@@ -1,21 +1,41 @@
-import axios from "axios";
+import axios from "./Axios";
 import { useEffect } from "react";
 import "./App.css";
 
 function App() {
   const data = {
-    name: "test zajzdadzadzamodif",
-    type: "phone aïe",
-    price: 200.05,
-    rating: 3.8,
-    warranty_years: 1,
-    available: true,
+    email: "testdz@gmail.com",
+    password: "TesteurPasswordUnhashed",
   };
   const test = () => {
     axios
-      .post(`http://localhost:8000/produit/creation/`, data)
+      .get(`http://localhost:8000/produits`)
       .then((res) => {
         console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const connexion = () => {
+    axios
+      .post(`http://localhost:8000/connexion`, data)
+      .then((res) => {
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deconnexion = () => {
+    axios
+      .post("http://localhost:8000/deconnexion")
+      .then((res) => {
+        console.log(res.data);
+        localStorage.removeItem("token");
       })
       .catch((err) => {
         console.log(err);
@@ -42,6 +62,20 @@ function App() {
           }}
         >
           Test Back
+        </p>
+        <p
+          onClick={() => {
+            connexion();
+          }}
+        >
+          Connexion
+        </p>
+        <p
+          onClick={() => {
+            deconnexion();
+          }}
+        >
+          Déconnexion
         </p>
       </header>
     </div>
