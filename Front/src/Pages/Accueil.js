@@ -78,6 +78,9 @@ export default function Accueil() {
             Affichage de notifications toast
             <br />
             Échange de données avec Socket.io
+            <br />
+            Render conditionnel pour l'affichage orthographiques et les années 1
+            ou +
           </Typography>
         </Typography>
         <Typography
@@ -99,6 +102,8 @@ export default function Accueil() {
             Assignation d'un produit créé à un utilisateur
             <br />
             Possibilité de filtrer en appuyant sur le filtre de la carte
+            <br />
+            Ca ne m'aurait pas dérangé de créer mon propre style
           </Typography>
         </Typography>
 
