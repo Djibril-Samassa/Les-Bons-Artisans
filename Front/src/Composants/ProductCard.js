@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { deleteProduct } from "../Apis/produits";
 import socket from "../socket";
-import ProductForm from "../Formulaires/ProduitForm";
+import ProductForm from "../Formulaires/ProductForm";
 
 export default function ProductCard(props) {
   // Hooks et variables
@@ -60,9 +60,13 @@ export default function ProductCard(props) {
 
   useEffect(() => {
     socket.on("newProductList", (data) => {
-      setProduct(product)
+      setProduct(product);
     });
   }, [socket]);
+
+  useEffect(()=>{
+    setProduct(props.product)
+  },[props])
 
   return (
     <motion.div initial="hidden" animate="visible" variants={variants}>
@@ -87,6 +91,10 @@ export default function ProductCard(props) {
           />
           <Typography variant="body2" color="text.secondary">
             {disponibilite}
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Garanti{product.type === "tv" ? "e" : null} {product.warranty_years}{" "}
+            an{product.warranty_years <= 1 ? null : "s"}
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: "center" }}>
@@ -160,7 +168,13 @@ export default function ProductCard(props) {
             Modifier {product.name}
           </Typography>
           <br />
-          <ProductForm finsihEdit={()=>{setEdit(false)}} isEditing={true} product={product} />
+          <ProductForm
+            finsihEdit={() => {
+              setEdit(false);
+            }}
+            isEditing={true}
+            product={product}
+          />
           <CardActions sx={{ justifyContent: "center" }}>
             <Button
               onClick={() => {

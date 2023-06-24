@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import Style from "./Product.module.css";
 import { getProductsList } from "../Apis/produits";
 import ProductCard from "../Composants/ProductCard";
-import ProductForm from "../Formulaires/ProduitForm";
+import ProductForm from "../Formulaires/ProductForm";
 import CardActions from "@mui/material/CardActions";
 import { getProductById } from "../Apis/produits";
 import socket from "../socket";
@@ -29,7 +29,9 @@ export default function Products() {
   // Hooks et variables
   const [showForm, setShowForm] = useState(false);
   const [products, setProducts] = useState(null);
+  const [filteredList, setFilteredList] = useState(null);
   const [cardKey, setCardKey] = useState(0);
+  const [filter, setFilter] = useState(null);
 
   // Fonctions
   const Redirect = useNavigate();
@@ -38,6 +40,7 @@ export default function Products() {
     const response = await getProductsList();
     if (response.status === 200) {
       setProducts(response.data.data);
+      setFilteredList(response.data.data);
     } else {
       alert(response.response.data.message);
     }
@@ -54,10 +57,28 @@ export default function Products() {
     }
   };
 
+  const filterProducts = (type) => {
+    const productType = type;
+    const filteredL = products.filter((product) => {
+      return product.type === productType;
+    });
+    setFilteredList(filteredL);
+    setFilter(productType);
+  };
+
+  const disableFilter = () => {
+    setFilteredList(products);
+    setFilter(null);
+  };
+
   // Renders
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    console.log(filteredList);
+  }, [filteredList]);
 
   useEffect(() => {
     socket.on("newProductList", (data) => {
@@ -92,10 +113,50 @@ export default function Products() {
           deconnexion
         </Button>
       </CardActions>
+      <br />
+      <CardActions>
+        <Button
+          variant={filter === "phone" ? "contained" : null}
+          onClick={() => {
+            filterProducts("phone");
+          }}
+        >
+          Téléphone
+        </Button>
+        <Button
+          variant={filter === "laptop" ? "contained" : null}
+          // variant="contained"
+          onClick={() => {
+            filterProducts("laptop");
+          }}
+        >
+          Pc portable
+        </Button>
+        <Button
+          variant={filter === "tv" ? "contained" : null}
+          // variant="contained"
+          onClick={() => {
+            filterProducts("tv");
+          }}
+        >
+          Télévision
+        </Button>
+        {filter !== null ? (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              disableFilter();
+            }}
+          >
+            Retirer le filtre
+          </Button>
+        ) : null}
+      </CardActions>
       {/* Afficher la liste des produits */}
       <div className={Style.productsContainer}>
-        {products?.length > 0
-          ? products.map((product, index) => {
+        {filteredList?.length > 0
+          ? filteredList.map((product, index) => {
               return (
                 <ProductCard key={index + "_" + cardKey} product={product} />
               );
