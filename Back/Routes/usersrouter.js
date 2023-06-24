@@ -62,7 +62,11 @@ router.post("/connexion", async (req, res) => {
     });
 
     // Envoyer le token au front
-    res.json({ token: token, message: "Connecté avec succès" });
+    res.json({
+      token: token,
+      message: "Connecté avec succès",
+      user: user.email,
+    });
   } catch (error) {
     res
       .status(500)

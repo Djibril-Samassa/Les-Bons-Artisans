@@ -15,7 +15,6 @@ router.get("/produitsList", TokenMiddleware, async (req, res) => {
 
 // Récupérer un produit à partir de l'id
 router.get("/produit/:produitId", async (req, res) => {
-  console.log(req.params.produitId);
   try {
     // Récupérer le produit avec le bon id
     const produit = await Produit.findById(req.params.produitId);
@@ -54,7 +53,6 @@ router.post("/creation", TokenMiddleware, async (req, res) => {
 // Supprimer un produit
 router.delete("/suppresion/:produitId", TokenMiddleware, async (req, res) => {
   const produitId = req.params.produitId;
-  console.log(produitId);
   try {
     // Vérifier si le produit existe avant de le supprimer
     const produit = await Produit.findById(produitId);
@@ -90,6 +88,5 @@ router.post("/modification/:produitId", TokenMiddleware, async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;

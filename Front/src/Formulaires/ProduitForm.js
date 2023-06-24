@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormGroup,
   FormControl,
@@ -9,19 +9,25 @@ import {
   FormControlLabel,
   Radio,
   Button,
+  Rating,
 } from "@mui/material";
-import { createProduct } from "../Apis/produits";
+import { createProduct, editProduct } from "../Apis/produits";
+import socket from "../socket";
 
-export default function ProductForm() {
+export default function ProductForm(props) {
+  const [isEditing, setIsEditing] = useState(props.isEditing);
+
+  // Hooks et variables
   const [productData, setProductData] = useState({
-    name: "",
-    type: "phone",
-    price: null,
-    warranty_years: null,
-    available: true,
-    rating: 2
+    name: isEditing ? props.product.name : "",
+    type: isEditing ? props.product.type : "phone",
+    price: isEditing ? props.product.price : null,
+    warranty_years: isEditing ? props.product.warranty_years : null,
+    available: isEditing ? props.product.available : true,
+    rating: isEditing ? props.product.rating : 0,
   });
 
+  // Fonctions
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setProductData((prevData) => ({
@@ -32,14 +38,26 @@ export default function ProductForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Utilisation des données récupérées, par exemple :
-    const dataToSend = {
-      ...productData,
-      price: parseInt(productData.price),
-      warranty_years: parseInt(productData.warranty_years),
-    };
-    console.log(dataToSend);
-    const response = await createProduct(productData);
+    // Si c'est une création
+    if (!isEditing) {
+      const response = await createProduct(productData);
+      if (response.status === 201) {
+        socket.emit("produit_action");
+      } else {
+        alert(response.response.data.message);
+      }
+    }
+    // Si c'est une modification
+    else {
+      const id = props.product._id;
+      const response = await editProduct(id, productData);
+      if (response.status === 200) {
+        socket.emit("produit_action");
+        props.finsihEdit();
+      } else {
+        alert(response.response.data.message);
+      }
+    }
   };
 
   return (
@@ -56,7 +74,7 @@ export default function ProductForm() {
           <Input
             name="name"
             value={productData.name}
-            onChange={handleInputChange}
+            onChange={(event) => handleInputChange(event)}
             required
           />
         </FormControl>
@@ -65,8 +83,9 @@ export default function ProductForm() {
           <InputLabel>Prix</InputLabel>
           <Input
             name="price"
+            inputProps={{ type: "number" }}
             value={productData.price}
-            onChange={handleInputChange}
+            onChange={(event) => handleInputChange(event)}
             required
           />
         </FormControl>
@@ -76,8 +95,8 @@ export default function ProductForm() {
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
           name="available"
-          value={productData.available}
-          onChange={handleInputChange}
+          value={productData.available.toString()}
+          onChange={(event) => handleInputChange(event)}
         >
           <FormControlLabel value="true" control={<Radio />} label="Oui" />
           <FormControlLabel value="false" control={<Radio />} label="Non" />
@@ -89,7 +108,7 @@ export default function ProductForm() {
           aria-labelledby="demo-radio-buttons-group-label"
           name="type"
           value={productData.type}
-          onChange={handleInputChange}
+          onChange={(event) => handleInputChange(event)}
         >
           <FormControlLabel
             value="phone"
@@ -101,6 +120,11 @@ export default function ProductForm() {
             control={<Radio required />}
             label="PC Portable"
           />
+          <FormControlLabel
+            value="tv"
+            control={<Radio required />}
+            label="Télévision"
+          />
         </RadioGroup>
 
         {/* Garantie */}
@@ -109,13 +133,27 @@ export default function ProductForm() {
           <Input
             name="warranty_years"
             value={productData.warranty_years}
-            onChange={handleInputChange}
+            onChange={(event) => handleInputChange(event)}
             required
+            inputProps={{ type: "number" }}
           />
         </FormControl>
+
+        {/* Notation */}
+        <Rating
+          name="rating"
+          value={productData.rating}
+          onChange={(event, value) =>
+            handleInputChange({ target: { name: "rating", value } })
+          }
+          precision={0.5}
+          size="large"
+          required
+        />
+
         <FormControl>
           <Button type="submit" variant="contained">
-            Terminer la création
+            {isEditing ? "Modifier" : "Créer"} le produit
           </Button>
         </FormControl>
       </FormGroup>
