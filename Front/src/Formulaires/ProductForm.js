@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { createProduct, editProduct } from "../Apis/produits";
 import socket from "../socket";
+import { toast } from "react-toastify";
 
 export default function ProductForm(props) {
   const [isEditing, setIsEditing] = useState(props.isEditing);
@@ -43,8 +44,9 @@ export default function ProductForm(props) {
       const response = await createProduct(productData);
       if (response.status === 201) {
         socket.emit("produit_action");
+        toast.success(response.data.message);
       } else {
-        alert(response.response.data.message);
+        toast.error(response.response.data.message);
       }
     }
     // Si c'est une modification
@@ -54,8 +56,9 @@ export default function ProductForm(props) {
       if (response.status === 200) {
         socket.emit("produit_action");
         props.finsihEdit();
+        toast.success(response.data.message);
       } else {
-        alert(response.response.data.message);
+        toast.error(response.response.data.message);
       }
     }
   };

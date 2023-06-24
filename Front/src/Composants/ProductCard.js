@@ -13,6 +13,7 @@ import Modal from "@mui/material/Modal";
 import { deleteProduct } from "../Apis/produits";
 import socket from "../socket";
 import ProductForm from "../Formulaires/ProductForm";
+import { toast } from "react-toastify";
 
 export default function ProductCard(props) {
   // Hooks et variables
@@ -54,7 +55,7 @@ export default function ProductCard(props) {
     if (response.status === 200) {
       socket.emit("produit_action");
     } else {
-      alert(response.response.data.message);
+      toast.error(response.response.data.message);
     }
   };
 
@@ -64,9 +65,9 @@ export default function ProductCard(props) {
     });
   }, [socket]);
 
-  useEffect(()=>{
-    setProduct(props.product)
-  },[props])
+  useEffect(() => {
+    setProduct(props.product);
+  }, [props]);
 
   return (
     <motion.div initial="hidden" animate="visible" variants={variants}>

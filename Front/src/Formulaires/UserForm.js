@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { Login, createAccount } from "../Apis/users";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function UserForm() {
   // Hooks et variables
@@ -34,7 +35,7 @@ export default function UserForm() {
     } else if (type === "connexion") {
       setType("inscription");
     } else {
-      alert("une erreur s'est produite");
+      toast.error("une erreur s'est produite");
     }
   };
 
@@ -50,7 +51,7 @@ export default function UserForm() {
     if (userData.password === userData.confirmPassword) {
       return true;
     } else {
-      alert("Les mots de passe ne correspondent pas");
+      toast.error("Les mots de passe ne correspondent pas");
       return false;
     }
   };
@@ -61,10 +62,10 @@ export default function UserForm() {
     const isPasswordMatch = checkPasswords();
     if (isPasswordMatch) {
       const response = await createAccount(data);
-      if (response.status === "201") {
-        alert(response.data.message);
+      if (response.status === 201) {
+        toast.success(response.data.message);
       } else {
-        alert(response.response.data.message);
+        toast.error(response.response.data.message);
       }
     }
   };
@@ -73,14 +74,14 @@ export default function UserForm() {
     e.preventDefault();
     const response = await Login(userData);
     if (response.status === 200) {
-      alert(response.data.message);
-      const username = response.data.user;
-      const token = response.data.token;
+      toast.success(response.data.message);
+      const username = response?.data?.user;
+      const token = response?.data?.token;
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
       Redirect("/");
     } else {
-      alert(response.response.data.message);
+      toast.error(response.response.data.message);
     }
   };
 
@@ -91,7 +92,7 @@ export default function UserForm() {
           ? Signup(e)
           : type === "connexion"
           ? Signin(e)
-          : alert("Une erreur s'est produite");
+          : toast.error("Une erreur s'est produite");
       }}
     >
       <Typography gutterBottom variant="h4" component="div">

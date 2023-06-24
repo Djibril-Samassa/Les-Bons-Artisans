@@ -12,6 +12,7 @@ import { getProductById } from "../Apis/produits";
 import socket from "../socket";
 import { Logout } from "../Apis/users";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const modalStyle = {
   position: "absolute",
@@ -42,18 +43,18 @@ export default function Products() {
       setProducts(response.data.data);
       setFilteredList(response.data.data);
     } else {
-      alert(response.response.data.message);
+      toast.error(response.response.data.message);
     }
   };
 
   const handleDeconnect = async () => {
     const response = await Logout();
     if (response.status === 200) {
-      alert(response.data.message);
+      toast.success(response.data.message);
       await localStorage.clear();
       Redirect("/auth");
     } else {
-      alert(response.response.data.message);
+      toast.error(response.response.data.message);
     }
   };
 
@@ -77,15 +78,13 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    console.log(filteredList);
-  }, [filteredList]);
-
-  useEffect(() => {
     socket.on("newProductList", (data) => {
       const newList = data.data;
+      fetchProducts();
       setProducts(newList);
       setShowForm(false);
       setCardKey((prevKey) => prevKey + 1);
+      setFilter(null);
     });
   }, [socket]);
 
