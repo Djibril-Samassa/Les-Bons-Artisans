@@ -37,6 +37,7 @@ export default function Products() {
   // Fonctions
   const Redirect = useNavigate();
 
+  // Récupération des produits
   const fetchProducts = async () => {
     const response = await getProductsList();
     if (response.status === 200) {
@@ -58,6 +59,7 @@ export default function Products() {
     }
   };
 
+  // Filtrer les produits
   const filterProducts = (type) => {
     const productType = type;
     const filteredL = products.filter((product) => {
@@ -67,6 +69,7 @@ export default function Products() {
     setFilter(productType);
   };
 
+  // Si le filtre est activé on affiche tous les produits
   const disableFilter = () => {
     setFilteredList(products);
     setFilter(null);

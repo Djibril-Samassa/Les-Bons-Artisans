@@ -47,6 +47,7 @@ export default function UserForm() {
     }));
   };
 
+  // Vérification des mots de passe
   const checkPasswords = () => {
     if (userData.password === userData.confirmPassword) {
       return true;
@@ -115,7 +116,6 @@ export default function UserForm() {
             inputProps={{ type: "email" }}
           />
         </FormControl>
-
         {/* Mot de passe */}
         <FormControl>
           <InputLabel>Mot de passe</InputLabel>
@@ -127,7 +127,7 @@ export default function UserForm() {
             inputProps={{ type: "password", minLength: 8 }}
           />
         </FormControl>
-
+        {/* Si c'est une inscription on lui demande confirmer son mot de passe */}
         {type === "inscription" ? (
           <>
             {/* Confirmation mot de passe */}
@@ -143,7 +143,6 @@ export default function UserForm() {
             </FormControl>
           </>
         ) : null}
-
         <FormControl>
           <Button type="submit" variant="contained">
             {type === "inscription" ? "Inscription" : "Connexion"}

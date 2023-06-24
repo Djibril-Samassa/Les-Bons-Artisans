@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+// Ce composant s'affiche quand l'utilisateur accède à une url qui n'existe pas sur le site
 export default function NotFound() {
   const Redirect = useNavigate();
   return (

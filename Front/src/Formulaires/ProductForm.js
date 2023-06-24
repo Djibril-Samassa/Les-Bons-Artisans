@@ -19,6 +19,7 @@ export default function ProductForm(props) {
   const [isEditing, setIsEditing] = useState(props.isEditing);
 
   // Hooks et variables
+  // Dans le cas d'une modification on attribut les valeurs du produit modifier comme valuer par défaut au lieu de lui faire tout réécrire
   const [productData, setProductData] = useState({
     name: isEditing ? props.product.name : "",
     type: isEditing ? props.product.type : "phone",

@@ -21,6 +21,8 @@ export default function ProductCard(props) {
   const [askDelete, setAskDelete] = useState(false);
   const [product, setProduct] = useState(props.product);
   const disponibilite = product.available ? "Disponible ✅" : "Indisponible ❌";
+
+  // Le type de produit réecrit au propre avec un émoji
   const type =
     product.type === "phone"
       ? "Téléphone 📱"
@@ -59,6 +61,7 @@ export default function ProductCard(props) {
     }
   };
 
+  // Mettre à jour le produit quand la liste qui le map est mise à jour => Avec redux ça aurait été plus facile...
   useEffect(() => {
     socket.on("newProductList", (data) => {
       setProduct(product);
@@ -94,7 +97,9 @@ export default function ProductCard(props) {
             {disponibilite}
           </Typography>
           <Typography variant="body1" color="text.secondary">
+            {/* Ajouter un "e" ou pas selon le type de produit */}
             Garanti{product.type === "tv" ? "e" : null} {product.warranty_years}{" "}
+            {/* Ajouter un "s" ou pas selon le nombre d'années de garanti */}
             an{product.warranty_years <= 1 ? null : "s"}
           </Typography>
         </CardContent>

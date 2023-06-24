@@ -24,6 +24,7 @@ export default function LoginPage() {
     return token !== null;
   };
 
+  // Si l'utilisateur veut accèder à la page de connexion alors qu'il est déjà connecté on le redirige vers l'accueil
   useEffect(() => {
     const isLoggedIn = checkIfLoggedIn();
     if (isLoggedIn) {
