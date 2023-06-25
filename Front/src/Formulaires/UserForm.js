@@ -15,6 +15,7 @@ import {
 import { Login, createAccount } from "../Apis/users";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 export default function UserForm() {
   // Hooks et variables
@@ -24,6 +25,11 @@ export default function UserForm() {
     password: null,
     confirmPassword: null,
   });
+
+  const variants = {
+    hidden: { y: -200 },
+    visible: { y: 0 },
+  };
 
   //Fonctions
 
@@ -87,76 +93,83 @@ export default function UserForm() {
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        type === "inscription"
-          ? Signup(e)
-          : type === "connexion"
-          ? Signin(e)
-          : toast.error("Une erreur s'est produite");
-      }}
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={variants}
+      transition={{ duration: 0.2 }}
     >
-      <Typography gutterBottom variant="h4" component="div">
-        Authentification
-      </Typography>
-      <FormGroup
-        sx={{
-          "& > :not(:last-child)": { marginBottom: "10px" },
-          "> div": { marginTop: "10px" },
+      <form
+        onSubmit={(e) => {
+          type === "inscription"
+            ? Signup(e)
+            : type === "connexion"
+            ? Signin(e)
+            : toast.error("Une erreur s'est produite");
         }}
       >
-        {/* Adresse e-mail */}
-        <FormControl>
-          <InputLabel>Adresse e-mail</InputLabel>
-          <Input
-            name="email"
-            value={userData.mail}
-            onChange={(event) => handleInputChange(event)}
-            required
-            inputProps={{ type: "email" }}
-          />
-        </FormControl>
-        {/* Mot de passe */}
-        <FormControl>
-          <InputLabel>Mot de passe</InputLabel>
-          <Input
-            name="password"
-            value={userData.password}
-            onChange={(event) => handleInputChange(event)}
-            required
-            inputProps={{ type: "password", minLength: 8 }}
-          />
-        </FormControl>
-        {/* Si c'est une inscription on lui demande confirmer son mot de passe */}
-        {type === "inscription" ? (
-          <>
-            {/* Confirmation mot de passe */}
-            <FormControl>
-              <InputLabel>Confirmer mot de passe</InputLabel>
-              <Input
-                name="confirmPassword"
-                value={userData.confirmPassword}
-                onChange={(event) => handleInputChange(event)}
-                required
-                inputProps={{ type: "password" }}
-              />
-            </FormControl>
-          </>
-        ) : null}
-        <FormControl>
-          <Button type="submit" variant="contained">
-            {type === "inscription" ? "Inscription" : "Connexion"}
-          </Button>
+        <Typography gutterBottom variant="h4" component="div">
+          Authentification
+        </Typography>
+        <FormGroup
+          sx={{
+            "& > :not(:last-child)": { marginBottom: "10px" },
+            "> div": { marginTop: "10px" },
+          }}
+        >
+          {/* Adresse e-mail */}
+          <FormControl>
+            <InputLabel>Adresse e-mail</InputLabel>
+            <Input
+              name="email"
+              value={userData.mail}
+              onChange={(event) => handleInputChange(event)}
+              required
+              inputProps={{ type: "email" }}
+            />
+          </FormControl>
+          {/* Mot de passe */}
+          <FormControl>
+            <InputLabel>Mot de passe</InputLabel>
+            <Input
+              name="password"
+              value={userData.password}
+              onChange={(event) => handleInputChange(event)}
+              required
+              inputProps={{ type: "password", minLength: 8 }}
+            />
+          </FormControl>
+          {/* Si c'est une inscription on lui demande confirmer son mot de passe */}
+          {type === "inscription" ? (
+            <>
+              {/* Confirmation mot de passe */}
+              <FormControl>
+                <InputLabel>Confirmer mot de passe</InputLabel>
+                <Input
+                  name="confirmPassword"
+                  value={userData.confirmPassword}
+                  onChange={(event) => handleInputChange(event)}
+                  required
+                  inputProps={{ type: "password" }}
+                />
+              </FormControl>
+            </>
+          ) : null}
+          <FormControl>
+            <Button type="submit" variant="contained">
+              {type === "inscription" ? "Inscription" : "Connexion"}
+            </Button>
 
-          <Button
-            onClick={() => {
-              changeFormType();
-            }}
-          >
-            {type === "inscription" ? "Se connecter" : "S'inscrire"}
-          </Button>
-        </FormControl>
-      </FormGroup>
-    </form>
+            <Button
+              onClick={() => {
+                changeFormType();
+              }}
+            >
+              {type === "inscription" ? "Se connecter" : "S'inscrire"}
+            </Button>
+          </FormControl>
+        </FormGroup>
+      </form>
+    </motion.div>
   );
 }

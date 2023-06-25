@@ -79,6 +79,8 @@ export default function Accueil() {
             <br />
             Échange de données avec Socket.io
             <br />
+            Hashage du mot de passe
+            <br />
             Render conditionnel pour l'affichage orthographiques et les années 1
             ou +
           </Typography>
