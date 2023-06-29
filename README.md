@@ -20,6 +20,9 @@
 - Des petites notifications lors des différentes actions pour une UX plaisante
 - Je n'ai pas utiliser Redux car je n'ai pas voulu prendre le risque de l'utiliser estimant que je ne maitrise pas assez (mais je ne doute pas que je pourrais très prochainement)
 
+ ## Contributors
+- Dans l'onglet contributor vous verrez mon Github personnel "Djibril SAMASSA" et "Dev tech 2w", ne vous en faitez pas c'est mon adresse e-mail professionnelle, n'ayant plus de PC personnel j'ai du réalisé mon test technique sur le pc du travail et je me suis simplement ajouté comme contributeur pour eviter les authentification à chaque fois sur VS Code. Mais soyez surs que c'est moi qui l'ai réalisé à 100%
+
 
   
 
