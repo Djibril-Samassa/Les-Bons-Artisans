@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Rating } from "@mui/material";
+import { Link, Rating } from "@mui/material";
 import { motion } from "framer-motion";
 import Style from "./ProductCard.module.css";
 import Box from "@mui/material/Box";
@@ -14,13 +14,18 @@ import { deleteProduct } from "../Apis/produits";
 import socket from "../socket";
 import ProductForm from "../Formulaires/ProductForm";
 import { toast } from "react-toastify";
+import axios from "../Axios";
 
 export default function ProductCard(props) {
   // Hooks et variables
   const [edit, setEdit] = useState(false);
   const [askDelete, setAskDelete] = useState(false);
   const [product, setProduct] = useState(props.product);
+  const [showC, setShowC] = useState(null);
+  const [suggestions, setSuggestions] = useState(null);
   const disponibilite = product.available ? "Disponible ✅" : "Indisponible ❌";
+
+  console.log(props);
 
   // Le type de produit réecrit au propre avec un émoji
   const type =
@@ -72,9 +77,21 @@ export default function ProductCard(props) {
     setProduct(props.product);
   }, [props]);
 
+  const handleShowCreation = () => {
+    setShowC(true);
+    axios
+      .get(`http://localhost:8000/produits/of/${product.creator_id}`)
+      .then((res) => {
+        setSuggestions(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <motion.div initial="hidden" animate="visible" variants={variants}>
-      <Card sx={{ width: 350, margin: "20px" }}>
+      <Card sx={{ width: 350, height: 450, margin: "20px" }}>
         <CardMedia
           sx={{ height: 140 }}
           image="https://source.unsplash.com/random/200x200?sig=1"
@@ -102,26 +119,41 @@ export default function ProductCard(props) {
             {/* Ajouter un "s" ou pas selon le nombre d'années de garanti */}
             an{product.warranty_years <= 1 ? null : "s"}
           </Typography>
+          {product.creator_name ? (
+            <Typography
+              onClick={() => {
+                handleShowCreation();
+              }}
+            >
+              {" "}
+              Crée par{" "}
+              <Link sx={{ cursor: "pointer" }}>
+                {product.creator_name}
+              </Link>{" "}
+            </Typography>
+          ) : null}
         </CardContent>
-        <CardActions sx={{ justifyContent: "center" }}>
-          <Button
-            onClick={() => {
-              setEdit(true);
-            }}
-            size="small"
-          >
-            Modifier
-          </Button>
-          <Button
-            onClick={() => {
-              setAskDelete(true);
-            }}
-            variant="outlined"
-            color="error"
-          >
-            Supprimer
-          </Button>
-        </CardActions>
+        {product.creator_id === props.creator_id ? (
+          <CardActions sx={{ justifyContent: "center" }}>
+            <Button
+              onClick={() => {
+                setEdit(true);
+              }}
+              size="small"
+            >
+              Modifier
+            </Button>
+            <Button
+              onClick={() => {
+                setAskDelete(true);
+              }}
+              variant="outlined"
+              color="error"
+            >
+              Supprimer
+            </Button>
+          </CardActions>
+        ) : null}
       </Card>
       {/* Modal de suppression */}
       <Modal
@@ -191,6 +223,21 @@ export default function ProductCard(props) {
               Annuler
             </Button>
           </CardActions>
+        </Box>
+      </Modal>
+      <Modal
+        open={showC}
+        onClose={() => {
+          setShowC(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography>Créations :</Typography>
+          {suggestions?.map((s, index) => {
+            return <Typography key={index}> - {s.name}</Typography>;
+          })}
         </Box>
       </Modal>
     </motion.div>

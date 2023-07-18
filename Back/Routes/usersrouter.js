@@ -11,7 +11,7 @@ const secret =
 
 // Inscription
 router.post("/inscription", async (req, res) => {
-  const { email, password } = req.body;
+  const { firstname, lastname, email, password } = req.body;
   // Vérifier si l'adresse email est déjà liée à un compte
   const user = await User.findOne({ email });
   if (user) {
@@ -23,6 +23,8 @@ router.post("/inscription", async (req, res) => {
       // Si non créer un compte
       const hashedpassword = await bcrypt.hash(password, 12);
       User.create({
+        firstname: firstname,
+        lastname: lastname,
         email: email,
         password: hashedpassword,
       });
@@ -65,7 +67,11 @@ router.post("/connexion", async (req, res) => {
     res.json({
       token: token,
       message: "Connecté avec succès",
-      user: user.email,
+      user: {
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      },
     });
   } catch (error) {
     res

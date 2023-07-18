@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 
 const ProduitSchema = new mongoose.Schema({
+  creator_name: {
+    type: String,
+    required: true,
+  },
+  creator_id: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,

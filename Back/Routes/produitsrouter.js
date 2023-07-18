@@ -28,7 +28,16 @@ router.get("/produit/:produitId", async (req, res) => {
 
 // Créer un produit
 router.post("/creation", TokenMiddleware, async (req, res) => {
-  const { name, type, price, rating, warranty_years, available } = req.body;
+  const {
+    name,
+    type,
+    price,
+    rating,
+    warranty_years,
+    available,
+    creator_id,
+    creator_name,
+  } = req.body;
   try {
     // Vérifier si un produit avec le même nom existe déjà => C'est le clé unique pour chaque produit
     const produit = await Produit.findOne({ name });
@@ -89,4 +98,15 @@ router.post("/modification/:produitId", TokenMiddleware, async (req, res) => {
   }
 });
 
+// Récupérer les produit d'un créateur
+router.get("/of/:creator_id", TokenMiddleware, async (req, res) => {
+  const creator_id = req.params.creator_id;
+
+  try {
+    const produits = await Produit.find({ creator_id: creator_id });
+    res.json(produits);
+  } catch (error) {
+    res.status(500).json({ error: "Une erreur est survenue" });
+  }
+});
 module.exports = router;

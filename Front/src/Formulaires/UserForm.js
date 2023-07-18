@@ -1,4 +1,5 @@
 import { React, useEffect, useState } from "react";
+// import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   FormGroup,
   FormControl,
@@ -16,11 +17,14 @@ import { Login, createAccount } from "../Apis/users";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { supabase } from "./client";
 
 export default function UserForm() {
   // Hooks et variables
   const [type, setType] = useState("connexion");
   const [userData, setUserData] = useState({
+    firstname: null,
+    lastname: null,
     email: null,
     password: null,
     confirmPassword: null,
@@ -31,7 +35,34 @@ export default function UserForm() {
     visible: { y: 0 },
   };
 
+  const [user, setUser] = useState(null);
+
   //Fonctions
+
+  useEffect(() => {
+    checkUser();
+    window.addEventListener("hasChange", function () {
+      checkUser();
+    });
+  }, []);
+
+  async function checkUser() {
+    await supabase.auth
+      .getUser()
+      .then(async (res) => {
+        await setUser(res.data.user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  async function signInWithGithub() {
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+    });
+  }
+
 
   const Redirect = useNavigate();
 
@@ -65,7 +96,7 @@ export default function UserForm() {
 
   const Signup = async (e) => {
     e.preventDefault();
-    const data = userData;
+    const data = await userData;
     const isPasswordMatch = checkPasswords();
     if (isPasswordMatch) {
       const response = await createAccount(data);
@@ -82,10 +113,10 @@ export default function UserForm() {
     const response = await Login(userData);
     if (response.status === 200) {
       toast.success(response.data.message);
-      const username = response?.data?.user;
+      const user = JSON.stringify(response?.data?.user);
       const token = response?.data?.token;
       localStorage.setItem("token", token);
-      localStorage.setItem("username", username);
+      localStorage.setItem("user", user);
       Redirect("/");
     } else {
       toast.error(response.response.data.message);
@@ -117,6 +148,34 @@ export default function UserForm() {
             "> div": { marginTop: "10px" },
           }}
         >
+          {type === "inscription" ? (
+            <>
+              {/* Prénom */}
+              <FormControl>
+                <InputLabel>Prénom</InputLabel>
+                <Input
+                  name="firstname"
+                  value={userData.firstname}
+                  onChange={(event) => handleInputChange(event)}
+                  required
+                  inputProps={{ type: "text" }}
+                />
+              </FormControl>
+
+              {/* Nom */}
+              <FormControl>
+                <InputLabel>Nom</InputLabel>
+                <Input
+                  name="lastname"
+                  value={userData.lastname}
+                  onChange={(event) => handleInputChange(event)}
+                  required
+                  inputProps={{ type: "text" }}
+                />
+              </FormControl>
+            </>
+          ) : null}
+
           {/* Adresse e-mail */}
           <FormControl>
             <InputLabel>Adresse e-mail</InputLabel>

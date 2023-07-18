@@ -91,8 +91,11 @@ export default function Products() {
     });
   }, [socket]);
 
+  const user = JSON.parse(localStorage?.user);
+
   return (
     <>
+      <Typography>{user.firstname}</Typography>
       <Typography gutterBottom variant="h4" component="div">
         Produits
       </Typography>
@@ -160,7 +163,11 @@ export default function Products() {
         {filteredList?.length > 0
           ? filteredList.map((product, index) => {
               return (
-                <ProductCard key={index + "_" + cardKey} product={product} />
+                <ProductCard
+                  key={index + "_" + cardKey}
+                  product={product}
+                  creator_id={user.id}
+                />
               );
             })
           : null}
@@ -180,7 +187,11 @@ export default function Products() {
             Créer un produit
           </Typography>
           <br />
-          <ProductForm isEditing={false} />
+          <ProductForm
+            creator_name={user.firstname}
+            id={user.id}
+            isEditing={false}
+          />
           <CardActions sx={{ justifyContent: "center" }}>
             <Button
               sx={{ justifyContent: "center" }}
